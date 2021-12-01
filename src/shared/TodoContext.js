@@ -1,4 +1,10 @@
-import React, { createContext, useReducer, useContext, useRef } from "react";
+import React, {
+  createContext,
+  useReducer,
+  useContext,
+  useRef,
+  useState,
+} from "react";
 
 const initialTodos = [
   {
@@ -46,25 +52,35 @@ const todoReducer = (state, action) => {
   }
 };
 
+// contexts
 const TodoStateContext = createContext();
 const TodoDispatchContext = createContext();
 const TodoNextIdContext = createContext();
+const TodoSearchContext = createContext();
+const TodoSetSearchContext = createContext();
 
+// Provider component
 export const TodoProvider = ({ children }) => {
   const [state, dispatch] = useReducer(todoReducer, initialTodos);
+  const [search, setSearch] = useState("");
   const nextId = useRef(state.length + 1);
 
   return (
     <TodoStateContext.Provider value={state}>
       <TodoDispatchContext.Provider value={dispatch}>
         <TodoNextIdContext.Provider value={nextId}>
-          {children}
+          <TodoSearchContext.Provider value={search}>
+            <TodoSetSearchContext.Provider value={setSearch}>
+              {children}
+            </TodoSetSearchContext.Provider>
+          </TodoSearchContext.Provider>
         </TodoNextIdContext.Provider>
       </TodoDispatchContext.Provider>
     </TodoStateContext.Provider>
   );
 };
 
+// custom hooks
 export const useTodoState = () => {
   const context = useContext(TodoStateContext);
   if (!context) {
@@ -83,6 +99,20 @@ export const useTodoNextId = () => {
   const context = useContext(TodoNextIdContext);
   if (!context) {
     throw new Error("Cannot find TodoNextIdProvider.");
+  }
+  return context;
+};
+export const useTodoSearch = () => {
+  const context = useContext(TodoSearchContext);
+  if (typeof context !== "string" && !context) {
+    throw new Error("Cannot find TodoSearchProvider.");
+  }
+  return context;
+};
+export const useTodoSetSearch = () => {
+  const context = useContext(TodoSetSearchContext);
+  if (!context) {
+    throw new Error("Cannot find TodoSetSearchProvider.");
   }
   return context;
 };

@@ -21,7 +21,7 @@ const TodoSearch = () => {
 
   return (
     <div>
-      {isOpen && <input ref={inputRef} onChange={onChange} />}
+      {isOpen && <input ref={inputRef} onChange={onChange} autoFocus />}
       <button onClick={onToggle}>{isOpen ? "x" : "🔍"}</button>
     </div>
   );

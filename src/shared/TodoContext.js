@@ -60,12 +60,15 @@ const TodoSearchContext = createContext();
 const TodoSetSearchContext = createContext();
 const TodoSortContext = createContext();
 const TodoSetSortContext = createContext();
+const TodoFilterContext = createContext();
+const TodoSetFilterContext = createContext();
 
 // Provider component
 export const TodoProvider = ({ children }) => {
   const [state, dispatch] = useReducer(todoReducer, initialTodos);
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("createdAt");
+  const [filter, setFilter] = useState(false);
   const nextId = useRef(state.length + 1);
 
   return (
@@ -76,7 +79,11 @@ export const TodoProvider = ({ children }) => {
             <TodoSetSearchContext.Provider value={setSearch}>
               <TodoSortContext.Provider value={sort}>
                 <TodoSetSortContext.Provider value={setSort}>
-                  {children}
+                  <TodoFilterContext.Provider value={filter}>
+                    <TodoSetFilterContext.Provider value={setFilter}>
+                      {children}
+                    </TodoSetFilterContext.Provider>
+                  </TodoFilterContext.Provider>
                 </TodoSetSortContext.Provider>
               </TodoSortContext.Provider>
             </TodoSetSearchContext.Provider>
@@ -134,6 +141,20 @@ export const useTodoSetSort = () => {
   const context = useContext(TodoSetSortContext);
   if (!context) {
     throw new Error("Cannot find TodoSetSortProvider.");
+  }
+  return context;
+};
+export const useTodoFilter = () => {
+  const context = useContext(TodoFilterContext);
+  if (context === undefined) {
+    throw new Error("Cannot find TodoFilterProvider.");
+  }
+  return context;
+};
+export const useTodoSetFilter = () => {
+  const context = useContext(TodoSetFilterContext);
+  if (!context) {
+    throw new Error("Cannot find TodoSetFilterProvider.");
   }
   return context;
 };

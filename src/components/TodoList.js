@@ -3,6 +3,7 @@ import {
   useTodoSearch,
   useTodoSort,
   useTodoState,
+  useTodoFilter,
 } from "../shared/TodoContext";
 import TodoItem from "./TodoItem";
 
@@ -29,6 +30,7 @@ const TodoList = () => {
   const todos = useTodoState();
   const search = useTodoSearch();
   const sort = useTodoSort();
+  const filter = useTodoFilter();
 
   const cases = [search.toLowerCase(), search.toUpperCase()];
 
@@ -37,6 +39,7 @@ const TodoList = () => {
       {todos
         .sort(getSortFn(sort))
         .sort(sortByIsDone)
+        .filter((todo) => !todo.isDone || !filter)
         .map(
           (todo) =>
             cases.some((c) => todo.description.includes(c)) && (

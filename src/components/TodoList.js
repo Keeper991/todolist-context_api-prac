@@ -6,24 +6,7 @@ import {
   useTodoFilter,
 } from "../shared/TodoContext";
 import TodoItem from "./TodoItem";
-
-const getSortFn = (sort) => {
-  switch (sort) {
-    case "createdAt":
-      return (a, b) => b.createdAt - a.createdAt;
-    case "description":
-      return (a, b) =>
-        a.description.toUpperCase() > b.description.toUpperCase() ? 1 : -1;
-    default:
-      throw new Error(`Unexpected sort type: ${sort}`);
-  }
-};
-
-const sortByIsDone = (a, b) => {
-  if (!a.isDone && b.isDone) return -1;
-  if (a.isDone && !b.isDone) return 1;
-  return 0;
-};
+import { getSortFn } from "./TodoSort";
 
 const TodoList = () => {
   // contexts
@@ -38,7 +21,7 @@ const TodoList = () => {
     <div>
       {todos
         .sort(getSortFn(sort))
-        .sort(sortByIsDone)
+        .sort(getSortFn("isDone"))
         .filter((todo) => !todo.isDone || !filter)
         .map(
           (todo) =>

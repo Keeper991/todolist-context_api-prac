@@ -13,3 +13,21 @@ const TodoSort = () => {
 };
 
 export default TodoSort;
+
+export const getSortFn = (sort) => {
+  switch (sort) {
+    case "createdAt":
+      return (a, b) => b.createdAt - a.createdAt;
+    case "description":
+      return (a, b) =>
+        a.description.toUpperCase() > b.description.toUpperCase() ? 1 : -1;
+    case "isDone":
+      return (a, b) => {
+        if (!a.isDone && b.isDone) return -1;
+        if (a.isDone && !b.isDone) return 1;
+        return 0;
+      };
+    default:
+      throw new Error(`Unexpected sort type: ${sort}`);
+  }
+};
